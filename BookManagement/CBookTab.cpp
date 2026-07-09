@@ -5,7 +5,7 @@
 #include "BookManagement.h"
 #include "afxdialogex.h"
 #include "CBookTab.h"
-
+#include "BookService.h"
 
 // CBookTab dialog
 
@@ -55,7 +55,42 @@ END_MESSAGE_MAP()
 
 	// TODO:  Add your control notification handler code here
 //}
+//-----------------------------INIT---------------------------------
+BOOL CBookTab::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+	//Thiet lap cot cho CListCtrl
+	m_listBooks.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	m_listBooks.InsertColumn(0, L"ID", LVCFMT_LEFT, 50);
+	m_listBooks.InsertColumn(1, L"NAME", LVCFMT_LEFT, 180);
+	m_listBooks.InsertColumn(2, L"PRICE", LVCFMT_RIGHT, 90);
+	m_listBooks.InsertColumn(3, L"QTY", LVCFMT_RIGHT, 70);
+	m_listBooks.InsertColumn(4, L"CREATED_DATE", LVCFMT_LEFT, 120);
+	RefreshList();
+	return true;
+}
 
+//RefreshList ( sau moi lan Update/Add ...)
+void CBookTab::RefreshList()
+{
+	m_listBooks.DeleteAllItems();
+	std::vector<Book> books = m_service.GetAllBooks();
+	for (size_t i = 0; i < books.size(); i++) {
+		const Book& b = books[i];
+
+		CString idStr, priceStr, qtyStr;
+		idStr.Format(L"%d", b.GetId());
+		priceStr.Format(L"%.2f", b.GetPrice());
+		qtyStr.Format(L"%d", b.GetQuantity());
+
+		int row = m_listBooks.InsertItem(i, idStr);
+		m_listBooks.SetItemText(row, 1, b.GetName());
+		m_listBooks.SetItemText(row, 2, priceStr);
+		m_listBooks.SetItemText(row, 3, qtyStr);
+		m_listBooks.SetItemText(row, 4, b.GetCreatedDate());
+
+	}
+}
 void CBookTab::OnBnClickedBtnAdd()
 {
 	// TODO: Add your control notification handler code here

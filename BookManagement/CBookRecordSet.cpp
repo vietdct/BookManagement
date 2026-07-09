@@ -23,7 +23,7 @@ CString CBookRecordSet::GetDefaultConnect()
 
 CString CBookRecordSet::GetDefaultSQL()
 {
-	return L"SELECT ID , NAME , PRICE , QUANTITY , CREATED_DATE FROM BOOK";
+	return L"SELECT ID , NAME , PRICE , QTY , CREATED_DATE FROM BOOK";
 }
 
 //MFC goi ham DoFieldExchange de dong bo cac field trong recordset voi cac field trong database 
@@ -34,7 +34,7 @@ void CBookRecordSet::DoFieldExchange(CFieldExchange* pFX)
 	RFX_Long(pFX, _T("[ID]"), m_ID);
 	RFX_Text(pFX, _T("[NAME]"), m_NAME);
 	RFX_Double(pFX, _T("[PRICE]"), m_PRICE);
-	RFX_Long(pFX, _T("[QUANTITY]"), m_QUANTITY);
+	RFX_Long(pFX, _T("[QTY]"), m_QUANTITY);
 	RFX_Date(pFX, _T("[CREATED_DATE]"), m_CREATED_DATE);
 }
 

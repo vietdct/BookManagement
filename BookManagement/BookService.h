@@ -5,6 +5,7 @@
 //Service chi chua bussiness rule/validate
 class BookService
 {
+public:
 	BookService();
 	std::vector<Book> GetAllBooks();
 

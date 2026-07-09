@@ -113,6 +113,11 @@ BOOL CBookManagementApp::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
+	if (!CDatabaseManager::GetInstance().Connect())
+	{
+		AfxMessageBox(_T("Khong the ket noi database. App Close."));
+		return FALSE;
+	}
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
 	CSingleDocTemplate* pDocTemplate;
@@ -138,13 +143,10 @@ BOOL CBookManagementApp::InitInstance()
 		return FALSE;
 
 	// The one and only window has been initialized, so show and update it
+
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
-	if (!CDatabaseManager::GetInstance().Connect())
-	{
-		AfxMessageBox(_T("Khong the ket noi database. App Close."));
-		return FALSE;
-	}
+
 	return TRUE;
 }
 

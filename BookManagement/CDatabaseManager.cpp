@@ -18,10 +18,11 @@ bool CDatabaseManager::Connect() {
 	if (m_isConnected) { return true; }
 
 	CString connectionStr =
-		L"ODBC;DRIVER={ODBC Driver 18 for SQL Server};"
-		L"SERVER=np:\\\\.\\pipe\\LOCALDB#D31DB094\\tsql\\query;"
-		L"DATABASE=BookManagementDB;Trusted_Connection=Yes;"
-		L"TrustServerCertificate=Yes;";
+		L"DRIVER={ODBC Driver 18 for SQL Server};"
+		L"SERVER=np:\\\\.\\pipe\\LOCALDB#92937163\\tsql\\query;"
+		L"DATABASE=BookManagementDB;"
+		L"Trusted_Connection=Yes;"
+		L"Encrypt=no;";
 	TRY
 	{
 		m_database.OpenEx(connectionStr, CDatabase::noOdbcDialog);
