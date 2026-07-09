@@ -1,5 +1,5 @@
 // CBookTab.cpp : implementation file
-//
+
 
 #include "pch.h"
 #include "BookManagement.h"
@@ -44,17 +44,6 @@ BEGIN_MESSAGE_MAP(CBookTab, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CBookTab message handlers
-
-//void CBookTab::OnEnChangeEditName()
-//{
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialogEx::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
-
-	// TODO:  Add your control notification handler code here
-//}
 //-----------------------------INIT---------------------------------
 BOOL CBookTab::OnInitDialog()
 {
@@ -62,10 +51,10 @@ BOOL CBookTab::OnInitDialog()
 	//Thiet lap cot cho CListCtrl
 	m_listBooks.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	m_listBooks.InsertColumn(0, L"ID", LVCFMT_LEFT, 50);
-	m_listBooks.InsertColumn(1, L"NAME", LVCFMT_LEFT, 180);
-	m_listBooks.InsertColumn(2, L"PRICE", LVCFMT_RIGHT, 90);
-	m_listBooks.InsertColumn(3, L"QTY", LVCFMT_RIGHT, 70);
-	m_listBooks.InsertColumn(4, L"CREATED_DATE", LVCFMT_LEFT, 120);
+	m_listBooks.InsertColumn(1, L"NAME", LVCFMT_LEFT, 300);
+	m_listBooks.InsertColumn(2, L"PRICE", LVCFMT_RIGHT, 150);
+	m_listBooks.InsertColumn(3, L"QTY", LVCFMT_RIGHT, 100);
+	m_listBooks.InsertColumn(4, L"CREATED_DATE", LVCFMT_LEFT, 400);
 	RefreshList();
 	return true;
 }
@@ -88,32 +77,124 @@ void CBookTab::RefreshList()
 		m_listBooks.SetItemText(row, 2, priceStr);
 		m_listBooks.SetItemText(row, 3, qtyStr);
 		m_listBooks.SetItemText(row, 4, b.GetCreatedDate());
+		m_listBooks.SetItemData(row, b.GetId());
 
 	}
 }
+
+//------------------- Lay du lieu tu form + validate dinh dang co ban ----------------
+bool CBookTab::GetFormInput(CString& name, double& price, int& quantity, CString& errorMsg)
+{
+	UpdateData(true);
+	name = m_editName;
+
+	if (m_editPrice.IsEmpty() || m_editQty.IsEmpty())
+	{
+		errorMsg = L"Please enter the full Price and Quantity.";
+		return false;
+	}
+	price = _ttof(m_editPrice);
+	quantity = _ttoi(m_editQty);
+	return true;
+}
+
+//---------------------------- Del form --------------------------------
+void CBookTab::ClearForm()
+{
+	m_editName.Empty();
+	m_editPrice.Empty();
+	m_editQty.Empty();
+	m_selectedId = 0;
+	m_listBooks.SetItemState(-1, 0, LVIS_SELECTED);
+	UpdateData(false);
+}
+
+//------------------- ADD -------------------
+
 void CBookTab::OnBnClickedBtnAdd()
 {
-	// TODO: Add your control notification handler code here
+	CString name, errorMsg;
+	double price;
+	int quantity;
+
+	if (!GetFormInput(name, price, quantity ,errorMsg))
+	{
+		AfxMessageBox(errorMsg);
+		return;
+	}
+	if (!m_service.AddBook(name, price, quantity, errorMsg))
+	{
+		AfxMessageBox(errorMsg);
+		return;
+	}
+	RefreshList();
+	ClearForm();
+	AfxMessageBox(L" Add Book Is Successed.");
 }
 
 void CBookTab::OnBnClickedBtnUpdate()
 {
-	// TODO: Add your control notification handler code here
+	CString name, errorMsg;
+	double price;
+	int quantity;
+
+	if (m_selectedId == 0)
+	{
+		AfxMessageBox(L"Please select a row from the list to update.");
+		return;
+	}
+	if (!GetFormInput(name, price, quantity, errorMsg)) {
+		AfxMessageBox(errorMsg);
+		return;
+	}
+	if (!m_service.UpdateBook(m_selectedId,name, price, quantity, errorMsg)) {
+		AfxMessageBox(errorMsg);
+		return;
+	}
+	RefreshList();
+	ClearForm();
+	AfxMessageBox(L"Update Book Is Successed.");
 }
 
 void CBookTab::OnBnClickedBtnDelete()
 {
-	// TODO: Add your control notification handler code here
+	if (m_selectedId == 0) 
+	{
+		AfxMessageBox(L"Please select a row from the list to delete.");
+		return;
+	}
+	int result = AfxMessageBox(L"Are you sure you want to delete this book?",
+								MB_YESNO | MB_ICONQUESTION);
+	if (result != IDYES) return;
+	CString errorMsg;
+	if (!m_service.DeleteBook(m_selectedId, errorMsg))
+	{
+		AfxMessageBox(errorMsg);
+		return;
+	}
+	RefreshList();
+	ClearForm();
+	AfxMessageBox(L"Deleted Book Is Successed .");
 }
 
 void CBookTab::OnBnClickedBtnClear()
 {
-	// TODO: Add your control notification handler code here
+	ClearForm();
 }
 
 void CBookTab::OnLvnItemchangedListBooks(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: Add your control notification handler code here
+	if ((pNMLV->uChanged & LVIF_STATE) && (pNMLV->uNewState & LVIS_SELECTED))
+	{
+		int nSelected = pNMLV->iItem;
+		m_selectedId = (int)m_listBooks.GetItemData(nSelected);
+
+		// Nếu form dùng DDX (m_name, m_price, m_quantity là member variable)
+		m_editName = m_listBooks.GetItemText(nSelected, 1); // cột tương ứng
+		m_editPrice =(m_listBooks.GetItemText(nSelected, 2));
+		m_editQty = (m_listBooks.GetItemText(nSelected, 3));
+		UpdateData(FALSE); // đẩy dữ liệu member -> control trên dialog
+	}
 	*pResult = 0;
 }

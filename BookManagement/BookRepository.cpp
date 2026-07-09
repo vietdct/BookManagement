@@ -40,7 +40,7 @@ std::vector<Book> BookRepository::GetAllBooks()
 }
 
 // Insert a new book into the database
-bool BookRepository::InsertBook(const Book& book)
+bool BookRepository::InsertBook( Book& book)
 {
 	CDatabase* pDB = CDatabaseManager::GetInstance().GetDatabase();
 	bool success = true;
@@ -49,7 +49,7 @@ bool BookRepository::InsertBook(const Book& book)
 	{
 		CBookRecordSet rs(pDB);
 		//mo voi dk rong de lay cau truc table khong can load data
-		rs.Open(CRecordset::snapshot, L"SELECT * FROM Book WHERE 1=0");
+		rs.Open(CRecordset::dynaset, L"SELECT * FROM BOOK WHERE 1=0");
 		rs.AddNew(); // add new record
 		rs.m_NAME = book.GetName();
 		rs.m_PRICE = book.GetPrice();
@@ -77,7 +77,7 @@ bool BookRepository::UpdateBook(const Book& book)
 		CBookRecordSet rs(pDB);
 		CString sql;
 		sql.Format(_T("SELECT * FROM Book WHERE ID = %d"), book.GetId());
-		rs.Open(CRecordset::snapshot, sql);
+		rs.Open(CRecordset::dynaset, sql);
 
 		if (!rs.IsEOF())
 		{
@@ -85,6 +85,7 @@ bool BookRepository::UpdateBook(const Book& book)
 			rs.m_NAME = book.GetName();
 			rs.m_PRICE = book.GetPrice();
 			rs.m_QUANTITY = book.GetQuantity();
+			rs.m_CREATED_DATE = CTime::GetCurrentTime();
 			rs.Update(); // Update the record in the database
 		}
 		else 
@@ -113,7 +114,7 @@ bool BookRepository::DeleteBook(int id)
 		CBookRecordSet rs(pDB);
 		CString sql;
 		sql.Format(_T("SELECT * FROM Book WHERE ID = %d"), id);
-		rs.Open(CRecordset::snapshot, sql);
+		rs.Open(CRecordset::dynaset, sql);
 		if (!rs.IsEOF())
 		{
 			rs.Delete(); // Delete the current record
@@ -143,7 +144,7 @@ std::vector<Book> BookRepository::SearchBookByName(const CString& nameBook)
 		CBookRecordSet rs(pDB);
 		CString sql;
 		sql.Format(_T("SELECT * FROM Book WHERE NAME LIKE '%%%s%%'"), nameBook);
-		rs.Open(CRecordset::snapshot, sql);
+		rs.Open(CRecordset::dynaset, sql);
 
 		while (!rs.IsEOF())
 		{

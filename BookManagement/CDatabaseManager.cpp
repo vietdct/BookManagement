@@ -14,12 +14,15 @@ CDatabaseManager::~CDatabaseManager()
 {
 	Disconnect();
 }
+
+
+
 bool CDatabaseManager::Connect() {
 	if (m_isConnected) { return true; }
 
 	CString connectionStr =
 		L"DRIVER={ODBC Driver 18 for SQL Server};"
-		L"SERVER=np:\\\\.\\pipe\\LOCALDB#92937163\\tsql\\query;"
+		L"SERVER=(localdb)\\MSSQLLocalDB;"
 		L"DATABASE=BookManagementDB;"
 		L"Trusted_Connection=Yes;"
 		L"Encrypt=no;";

@@ -22,7 +22,7 @@ bool BookService::ValidateInput(const CString& name, double price, int quantity,
 		outErrorMsg = L"Price must be greater than 0.";
 		return false;
 	}
-	if (quantity >= 0)
+	if (quantity < 0)
 	{
 		outErrorMsg = L"Quantity cannot be negative.";
 		return false;
