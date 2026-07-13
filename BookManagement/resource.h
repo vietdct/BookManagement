@@ -97,6 +97,11 @@
 #define IDC_BTN_CLEAR                   1007
 #define IDC_LIST_BOOKS                  1008
 #define IDC_TAB_MAIN                    1009
+#define IDC_EDIT_FILEPATH               1010
+#define IDC_BTN_BROWSE                  1011
+#define IDC_BTN_IMPORT                  1012
+#define IDC_BTN_IMPORT2                 1013
+#define IDC_BTN_EXPORT                  1013
 
 // Next default values for new objects
 // 
@@ -104,7 +109,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1010
+#define _APS_NEXT_CONTROL_VALUE         1012
 #define _APS_NEXT_SYMED_VALUE           327
 #endif
 #endif

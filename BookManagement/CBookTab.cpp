@@ -16,6 +16,8 @@ CBookTab::CBookTab(CWnd* pParent /*=nullptr*/)
 	, m_editName(_T(""))
 	, m_editPrice(_T(""))
 	, m_editQty(_T(""))
+	, m_selectedId(0)
+
 {
 
 }
@@ -172,6 +174,7 @@ void CBookTab::OnBnClickedBtnDelete()
 		AfxMessageBox(errorMsg);
 		return;
 	}
+
 	RefreshList();
 	ClearForm();
 	AfxMessageBox(L"Deleted Book Is Successed .");

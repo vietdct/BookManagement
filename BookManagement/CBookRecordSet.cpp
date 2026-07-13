@@ -12,7 +12,7 @@ CBookRecordSet::CBookRecordSet(CDatabase* pDatabase)
 	m_CREATED_DATE = CTime::GetCurrentTime();
 
 	m_nFields = columnCount;
-	m_nDefaultType = snapshot; // snapshot : Update/Edit in recordset is allowed
+	m_nDefaultType = dynaset; 
 }
 
 CString CBookRecordSet::GetDefaultConnect() 

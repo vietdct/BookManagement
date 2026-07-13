@@ -134,16 +134,18 @@ bool BookRepository::DeleteBook(int id)
 		return success;
 }
 
-
+//SearchBookByName 
 std::vector<Book> BookRepository::SearchBookByName(const CString& nameBook)
 {
 	std::vector<Book> result;
+	CString safeName = nameBook;
+	safeName.Replace(L"'", L"''");
 	CDatabase* pDB = CDatabaseManager::GetInstance().GetDatabase();
 	TRY
 	{
 		CBookRecordSet rs(pDB);
 		CString sql;
-		sql.Format(_T("SELECT * FROM Book WHERE NAME LIKE '%%%s%%'"), nameBook);
+		sql.Format(_T("SELECT * FROM Book WHERE NAME LIKE '%%%s%%'"), safeName.GetString());
 		rs.Open(CRecordset::dynaset, sql);
 
 		while (!rs.IsEOF())
@@ -166,3 +168,4 @@ std::vector<Book> BookRepository::SearchBookByName(const CString& nameBook)
 	END_CATCH
 		return result;
 }
+
